@@ -300,13 +300,31 @@ iptables -A INPUT -p icmp -m connlimit --connlimit-above 2 --connlimit-mask 0 -j
 
 ## Soal 4
 Akses menuju Web Server hanya diperbolehkan disaat jam kerja yaitu Senin sampai Jumat pada pukul 07.00 - 16.00. <br>
+Melakukan command di bawah ini untuk pembatasan jam dan hari mengakses.
+### SSS dan Garden
+```
+iptables -A INPUT -m time --timestart 07:00 --timestop 16:00 --weekdays Mon,Tue,Wed,Thu,Fri -j ACCEPT
+iptables -A INPUT -j REJECT
+```
+### Testing
+![image](https://user-images.githubusercontent.com/85897222/206861988-313de289-7f96-4704-8be7-8664060c8798.png)
+<br>
+![image](https://user-images.githubusercontent.com/85897222/206861994-43b2c9d9-07c5-48c9-8e5f-7a15cf238837.png)
+
 
 ## Soal 5
 Karena kita memiliki 2 Web Server, Loid ingin Ostania diatur sehingga setiap request dari client yang mengakses Garden dengan port 80 akan didistribusikan secara bergantian pada SSS dan Garden secara berurutan dan request dari client yang mengakses SSS dengan port 443 akan didistribusikan secara bergantian pada Garden dan SSS secara berurutan. <br>
+Melakukan command-command di bawah ini.
+### Ostania
+```
+iptables -A PREROUTING -t nat -p tcp --dport 80 -d 10.29.0.27 -m statistic --mode nth --every 2 --packet 0 -j DNAT --to-destination 10.29.0.27:80
+iptables -A PREROUTING -t nat -p tcp --dport 80 -d 10.29.0.27 -j DNAT --to-destination 10.29.0.26:80
+iptables -A PREROUTING -t nat -p tcp --dport 443 -d 10.29.0.26 -m statistic --mode nth --every 2 --packet 0 -j DNAT --to-destination 10.29.0.26:443
+iptables -A PREROUTING -t nat -p tcp --dport 443 -d 10.29.0.26 -j DNAT --to-destination 10.29.0.27:443
+```
+
 ## Soal 6
 Karena Loid ingin tau paket apa saja yang di-drop, maka di setiap node server dan router ditambahkan logging paket yang di-drop dengan standard syslog level. <br>
-
-### Testing
 
 ## Kendala
 tidak ada
