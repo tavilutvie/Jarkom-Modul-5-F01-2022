@@ -259,17 +259,48 @@ service bind9 restart
 service bind9 restart
 ```
 ### Testing
+Pada salah satu client.
+![image](https://user-images.githubusercontent.com/85897222/206861683-28f971da-9cca-4386-b8ba-334cdb82f996.png)
 
 
 ## Soal 1
 Agar topologi yang kalian buat dapat mengakses keluar, kalian diminta untuk mengkonfigurasi Strix menggunakan iptables, tetapi Loid tidak ingin menggunakan MASQUERADE. <br>
+Melakukan command berikut. <br>
+### Strix
+```
+iptables -t nat -A POSTROUTING -o eth0 -j SNAT -s 10.29.0.0/21 --to-source 192.168.122.2
+```
 
 ## Soal 2
 Kalian diminta untuk melakukan drop semua TCP dan UDP dari luar Topologi kalian pada server yang merupakan DHCP Server demi menjaga keamanan. <br>
+Melakukan command berikut untuk melalukan drop pada semua TCP dan UDP dengan tujuan WISE yang memiliki IP address 10.29.0.19.
+### Strix
+```
+iptables -A FORWARD -i eth0 -p tcp -d 10.29.0.19 -j DROP
+iptables -A FORWARD -i eth0 -p udp -d 10.29.0.19 -j DROP
+```
+### Testing
+![image](https://user-images.githubusercontent.com/85897222/206861824-34f4a31b-042b-4f79-bb6a-3e7ec5621bf2.png)
+
+
 ## Soal 3
 Loid meminta kalian untuk membatasi DHCP dan DNS Server hanya boleh menerima maksimal 2 koneksi ICMP secara bersamaan menggunakan iptables, selebihnya didrop. <br>
+Melakukan command berikut untuk membatasi.
+### Wise
+```
+iptables -A INPUT -p icmp -m connlimit --connlimit-above 2 --connlimit-mask 0 -j DROP
+```
+### Testing
+![image](https://user-images.githubusercontent.com/85897222/206861893-8b05c81b-7ffb-4a8d-91e3-9dcc1ab34373.png)
+<br>
+![image](https://user-images.githubusercontent.com/85897222/206861912-a3925138-0a56-43e8-b029-3396bbc1a748.png)
+<br>
+![image](https://user-images.githubusercontent.com/85897222/206861923-ab0c82bb-3370-46bd-a477-3bcd16e5404d.png)
+
+
 ## Soal 4
 Akses menuju Web Server hanya diperbolehkan disaat jam kerja yaitu Senin sampai Jumat pada pukul 07.00 - 16.00. <br>
+
 ## Soal 5
 Karena kita memiliki 2 Web Server, Loid ingin Ostania diatur sehingga setiap request dari client yang mengakses Garden dengan port 80 akan didistribusikan secara bergantian pada SSS dan Garden secara berurutan dan request dari client yang mengakses SSS dengan port 443 akan didistribusikan secara bergantian pada Garden dan SSS secara berurutan. <br>
 ## Soal 6
