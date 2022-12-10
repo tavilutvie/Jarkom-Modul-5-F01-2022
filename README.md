@@ -234,6 +234,22 @@ OPTIONS=
 service isc-dhcp-relay restart
 service isc-dhcp-relay restart
 ```
+### Strix
+```
+echo 'nameserver 192.168.122.1' > /etc/resolv.conf
+
+apt-get update
+apt-get install isc-dhcp-relay -y
+
+echo '
+SERVERS="10.29.0.19"
+INTERFACES="eth0 eth1 eth2 eth3"
+OPTIONS=
+' > /etc/default/isc-dhcp-relay
+
+service isc-dhcp-relay restart
+service isc-dhcp-relay restart
+```
 Melakukan command-command di bawah ini untuk DNS forwarder.
 ### Eden
 ```
